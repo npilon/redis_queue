@@ -1,0 +1,14 @@
+syntax: glob
+*.pyc
+build
+data
+dist
+scratch
+*~
+*.swp
+*.db
+.DS_Store
+.coverage
+*.egg-info
+env
+.test.*
