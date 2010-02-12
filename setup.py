@@ -19,6 +19,7 @@ setup(name='redis_queue',
       zip_safe=True,
       install_requires=[
           # -*- Extra requirements: -*-
+          'redis',
       ],
       entry_points="""
       # -*- Entry points: -*-
