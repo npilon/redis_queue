@@ -1,9 +1,22 @@
+#   Copyright 2010 O'Reilly Media Inc.
 #
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
 
 import redis
 
 class Queue(object):
     """Implements the same interface as collections.dequeue, except for creation."""
+    
     def __init__(self, redis, key):
         """Create a Queue backed by redis.
         
@@ -88,6 +101,10 @@ class ExclusiveQueue(Queue):
     all other instances from the queue."""
     
     def pop(self):
+        """pop and return the rightmost item in the queue, then delete all other
+        instances of this item from the queue.
+        
+        While both of the operations used are atomic, this method itself is not."""
         item = super(ExclusiveQueue, self).pop()
         try:
             self.remove(item)
@@ -96,6 +113,10 @@ class ExclusiveQueue(Queue):
         return item
     
     def popleft(self):
+        """pop and return the leftmost item in the queue, then delete all other
+        instances of this item from the queue.
+        
+        While both of the operations used are atomic, this method itself is not."""
         item = super(ExclusiveQueue, self).popleft()
         try:
             self.remove(item)

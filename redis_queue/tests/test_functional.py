@@ -1,10 +1,10 @@
 import unittest
-import redis
+from redis import Redis
 from redis_queue import Queue, ExclusiveQueue
 
 class TestRedisQueue(unittest.TestCase):
     def setUp(self):
-        self.redis = redis.Redis(host='127.0.0.1', port=6379)
+        self.redis = Redis(host='127.0.0.1', port=6379)
         self.key = 'test_redis_queue'
         self.queue = Queue(self.redis, self.key)
     
@@ -103,7 +103,7 @@ class TestRedisQueue(unittest.TestCase):
 
 class TestRedisExclusiveQueue(unittest.TestCase):
     def setUp(self):
-        self.redis = redis.Redis(host='127.0.0.1', port=6379)
+        self.redis = Redis(host='127.0.0.1', port=6379)
         self.key = 'test_redis_queue'
         self.queue = ExclusiveQueue(self.redis, self.key)
     

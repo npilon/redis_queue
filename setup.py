@@ -5,14 +5,52 @@ version = '0.1'
 
 setup(name='redis_queue',
       version=version,
-      description="A persistent, atomic queue (like Queue) implemented with redis backing.",
-      long_description="""\
-""",
-      classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+      description="A persistent, (mostly) atomic queue (like deque or Queue) implemented with redis backing.",
+      long_description="""redis_queue is useful for implementing a multi-producer,
+      multi-consumer job queue. While it doesn't have all the handy blocking and
+      locking features of Queue, it does have the advantages of being
+      multi-process safe and persistant.
+      
+      Also contains an extension of the Redis wrapper from redis that adds
+      support for BLPOP and BRPOP - the blocking pop operations.
+      
+      Example Usage:::
+          >>> from redis import Redis
+          >>> from redis_queue import Queue
+          >>> redis = Redis(host='127.0.0.1', port=6379)
+          >>> queue = Queue(redis, 'test_queue')
+          >>> queue.append('one')
+          >>> queue.append('two')
+          >>> queue.append('three')
+          >>> queue.pop()
+          'three'
+          >>> queue.pop()
+          'two'
+          >>> queue.pop()
+          'one'
+          >>> queue.append('one')
+          >>> queue.append('two')
+          >>> queue.append('three')
+          >>> queue.popleft()
+          'one'
+          >>> queue.popleft()
+          'two'
+          >>> queue.popleft()
+          'three'
+      """,
+      classifiers=[
+          'Development Status :: 4 - Beta',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: Apache Software License',
+          'Operating System :: OS Independent',
+          'Programming Language :: Python',
+          'Topic :: Software Development :: Libraries :: Python Modules',
+          'Topic :: Database',
+          ], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
       keywords='queue redis',
       author='Nicholas Pilon',
       author_email='npilon@oreilly.com',
-      url='',
+      url='http://bitbucket.org/npilon/redis_queue/',
       license='Apache',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       include_package_data=True,
@@ -21,7 +59,5 @@ setup(name='redis_queue',
           # -*- Extra requirements: -*-
           'redis',
       ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
+      entry_points="""""",
       )
