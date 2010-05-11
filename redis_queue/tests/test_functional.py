@@ -4,12 +4,13 @@ from redis_queue import Queue, ExclusiveQueue
 
 class TestRedisQueue(unittest.TestCase):
     def setUp(self):
-        self.redis = Redis(host='127.0.0.1', port=6379)
+        self.redis_args = dict(host='127.0.0.1', port=6379)
         self.key = 'test_redis_queue'
-        self.queue = Queue(self.redis, self.key)
+        self.queue = Queue(self.key, **self.redis_args)
     
     def tearDown(self):
-        self.redis.delete(self.key)
+        redis = Redis(**self.redis_args)
+        redis.delete(self.key)
     
     def test_right(self):
         self.queue.append('one')
@@ -103,12 +104,13 @@ class TestRedisQueue(unittest.TestCase):
 
 class TestRedisExclusiveQueue(unittest.TestCase):
     def setUp(self):
-        self.redis = Redis(host='127.0.0.1', port=6379)
+        self.redis_args = dict(host='127.0.0.1', port=6379)
         self.key = 'test_redis_queue'
-        self.queue = ExclusiveQueue(self.redis, self.key)
+        self.queue = ExclusiveQueue(key=self.key, **self.redis_args)
     
     def tearDown(self):
-        self.redis.delete(self.key)
+        redis = Redis(**self.redis_args)
+        redis.delete(self.key)
     
     def test_right(self):
         self.queue.append('two')
