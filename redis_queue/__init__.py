@@ -13,24 +13,38 @@
 #   limitations under the License.
 
 import redis
+import threading
+
+redis_connections = threading.local()
 
 class Queue(object):
-    """Implements the same interface as collections.dequeue, except for creation."""
+    """Implements the same interface as collections.dequeue, except for creation.
     
-    def __init__(self, redis, key):
+    This is thread-safe; redis 1.34.1 is NOT."""
+    
+    def __init__(self, key, **kwargs):
         """Create a Queue backed by redis.
         
         Parameters:
         - redis: a Redis database object from redis.
         - key: The redis key to store the queue's backing list in."""
-        self._redis = redis
+        self.redis_parameters = kwargs
         self.key = key
     
+    @property
+    def _redis(self):
+        if hasattr(redis_connections, str(self.redis_parameters)):
+            return getattr(redis_connections, str(self.redis_parameters))
+        else:
+            r = redis.Redis(**self.redis_parameters)
+            setattr(redis_connections, str(self.redis_parameters), r)
+            return r
+    
     def append(self, x):
-        self._redis.push(self.key, x)
+        self._redis.rpush(self.key, x)
     
     def appendleft(self, x):
-        self._redis.push(self.key, x, head=True)
+        self._redis.lpush(self.key, x)
     
     def clear(self):
         self._redis.delete(self.key)
@@ -46,13 +60,13 @@ class Queue(object):
             self.appendleft(item)
     
     def pop(self):
-        item = self._redis.pop(self.key, tail=True)
+        item = self._redis.rpop(self.key)
         if item is None:
             raise IndexError
         return item
     
     def popleft(self):
-        item = self._redis.pop(self.key)
+        item = self._redis.lpop(self.key)
         if item is None:
             raise IndexError
         return item
