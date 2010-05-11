@@ -26,8 +26,8 @@ class Queue(object):
         """Create a Queue backed by redis.
         
         Parameters:
-        - redis: a Redis database object from redis.
-        - key: The redis key to store the queue's backing list in."""
+        - key: The redis key to store the queue's backing list in.
+        - remaining arguments: how to construct our redis connection."""
         self.redis_parameters = kwargs
         self.key = key
     
