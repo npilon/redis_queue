@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '0.1'
+version = '0.2'
 
 setup(name='redis_queue',
       version=version,
@@ -57,7 +57,7 @@ setup(name='redis_queue',
       zip_safe=True,
       install_requires=[
           # -*- Extra requirements: -*-
-          'redis',
+          'redis>=1.34.1',
       ],
       entry_points="""""",
       )
