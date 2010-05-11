@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '0.2'
+version = '0.3'
 
 setup(name='redis_queue',
       version=version,
@@ -10,9 +10,6 @@ setup(name='redis_queue',
       multi-consumer job queue. While it doesn't have all the handy blocking and
       locking features of Queue, it does have the advantages of being
       multi-process safe and persistant.
-      
-      Also contains an extension of the Redis wrapper from redis that adds
-      support for BLPOP and BRPOP - the blocking pop operations.
       
       Example Usage:::
           >>> from redis import Redis
