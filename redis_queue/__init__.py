@@ -59,14 +59,20 @@ class Queue(object):
         for item in iterable:
             self.appendleft(item)
     
-    def pop(self):
-        item = self._redis.rpop(self.key)
+    def pop(self, timeout=None):
+        if timeout is not None:
+            item = self._redis.brpop(self.key, timeout)
+        else:
+            item = self._redis.rpop(self.key)
         if item is None:
             raise IndexError
         return item
     
-    def popleft(self):
-        item = self._redis.lpop(self.key)
+    def popleft(self, timeout=None):
+        if timeout is not None:
+            item = self._redis.blpop(self.key, timeout)
+        else:
+            item = self._redis.lpop(self.key)
         if item is None:
             raise IndexError
         return item
@@ -114,24 +120,24 @@ class ExclusiveQueue(Queue):
     queue once. This is not at all atomic; it pops something off then removes
     all other instances from the queue."""
     
-    def pop(self):
+    def pop(self, timeout=None):
         """pop and return the rightmost item in the queue, then delete all other
         instances of this item from the queue.
         
         While both of the operations used are atomic, this method itself is not."""
-        item = super(ExclusiveQueue, self).pop()
+        item = super(ExclusiveQueue, self).pop(timeout)
         try:
             self.remove(item)
         except ValueError:
             pass
         return item
     
-    def popleft(self):
+    def popleft(self, timeout=None):
         """pop and return the leftmost item in the queue, then delete all other
         instances of this item from the queue.
         
         While both of the operations used are atomic, this method itself is not."""
-        item = super(ExclusiveQueue, self).popleft()
+        item = super(ExclusiveQueue, self).popleft(timeout)
         try:
             self.remove(item)
         except ValueError:
