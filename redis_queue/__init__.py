@@ -119,6 +119,14 @@ class ExclusiveQueue(Queue):
     """A queue that implements exclusivity (a given thing can only be in the
     queue once. This is not at all atomic; it pops something off then removes
     all other instances from the queue."""
+        
+    def append(self, x):
+        if x not in self:
+            self._redis.rpush(self.key, x)
+    
+    def appendleft(self, x):
+        if x not in self:
+            self._redis.lpush(self.key, x)
     
     def pop(self, timeout=None):
         """pop and return the rightmost item in the queue, then delete all other
