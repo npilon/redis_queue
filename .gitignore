@@ -1,0 +1,3 @@
+dist/
+redis_queue.egg-info/
+*.pyc
