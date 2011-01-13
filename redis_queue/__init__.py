@@ -91,7 +91,7 @@ class Queue(object):
         # This could stand to be a lot more efficient.
         # Why doesn't redis support this on the server side?
         members = self._redis.lrange(self.key, 0, -1)
-        return item in members
+        return None if members is None else item in members
     
     # Length
     def __len__(self):
